@@ -1,11 +1,11 @@
 const mongoose=require('mongoose');
 
 const tagSchema=new mongoose.Schema({
-    tagName:{
+    name:{
         type:String,
         require:true
     },
-    tagDescription:{
+    description:{
         type:String,
         require:true
     },
