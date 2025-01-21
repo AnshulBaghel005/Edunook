@@ -9,6 +9,9 @@ app.use('/api/v1',routes);
 //db connection
 const dbConnect=require('./config/database')
 dbConnect();
+//cloudinary connection
+const cloudinary=require('./config/cloudinary');
+cloudinary.cloudinaryConnect();
 //server start
 app.listen(PORT,()=>{
     console.log(`app listen at port no ${PORT}`);

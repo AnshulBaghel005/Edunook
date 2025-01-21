@@ -8,6 +8,7 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
 exports.signupController = async (req, res) => {
+  //user input
   try {
     //
     const {
@@ -40,6 +41,7 @@ exports.signupController = async (req, res) => {
         message: "password does not match,please try again",
       });
     }
+    //check email id already registerd or not
     let existingUser = await USER.findOne({ email });
     if (existingUser) {
       return res.status(401).json({
@@ -47,6 +49,7 @@ exports.signupController = async (req, res) => {
         message: "user already registered",
       });
     }
+    //fetch otp
     const fetchOTP = await OTP.findOne({otp});
     console.log("recentOTP", fetchOTP);
     if (!fetchOTP) {
@@ -55,16 +58,17 @@ exports.signupController = async (req, res) => {
         message: "otp not found",
       });
     }
+    //hashpassword
     let hashpassword = await bcrypt.hash(password, 10);
     console.log("hashpassword", hashpassword);
-
+    //profile model
     const profileDeatails = await profile.create({
       gender: null,
       dateOfBirth: null,
       about: null,
       contactNumber: null,
     });
-    //image reh gya hai
+    //save user details in db
     const user = await USER.create({
       firstName,
       lastName,
@@ -74,7 +78,7 @@ exports.signupController = async (req, res) => {
       additionDetails: profileDeatails._id,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
-
+ //return res
     res.status(200).json({
       success: true,
       message: "user successfully sing in ",
@@ -88,21 +92,22 @@ exports.signupController = async (req, res) => {
     });
   }
 };
-
+//--------------login controller-----------------
 exports.loginController = async (req, res) => {
   try{
+    //fetch input
     const {email,password}=req.body;
-
+    //check all details are filled or not
     if(!email||!password){
         return res.status(400).json({
             message:'please fill the details carrefully'
         })
     }
-
+    //check user siggin or not
     let user=await USER.findOne({email});
     if(!user){
         return res.status(400).json({
-            message:'please sign in'
+            message:'please sign in first'
         })
     }
     let payload={
@@ -110,6 +115,7 @@ exports.loginController = async (req, res) => {
         id:user._id,
         accountType:user.accountType
     }
+    //match password and generate token(payload,jwt_secret_key,expire time)
     if(await bcrypt.compare(password,user.password)){
         let token=await JWT.sign(payload,
             process.env.JWT_SECRET,{
@@ -123,6 +129,7 @@ exports.loginController = async (req, res) => {
             expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
         }
+        //generate cookies(cookie name,token,options)
          res.cookie("babarCookie",token,options).status(200).json({
             user,
             token,

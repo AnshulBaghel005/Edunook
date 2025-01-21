@@ -10,6 +10,11 @@ const courseSchema=new mongoose.Schema({
         require:true,
         trim:true
     },
+    whatYouWillLearn:{
+        type:String,
+        require:true,
+        trim:true
+    },
     instructor:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',

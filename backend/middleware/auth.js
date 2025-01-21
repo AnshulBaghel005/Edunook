@@ -3,11 +3,10 @@ require("dotenv").config();
 exports.auth = (req, res, next) => {
   try {
     //fetch token
-    const token =
-      req.body.token ||
-      req.cookies.token ||
-      req.header("Autorisation").replace("Bearer", "");
-    console.log(token + "token");
+    const token = req.body.token
+      // req.cookies.token ||
+      // req.header("Autorisation").replace("Bearer", "");
+    console.log(token + "----token");
     if (!token) {
       return res.status(400).json({
         message: "token is not find",
@@ -15,7 +14,7 @@ exports.auth = (req, res, next) => {
     }
     //verify token
     try {
-      const payload = JWT.verify(token, process.env.JWT_SCREAT);
+      const payload = JWT.verify(token, process.env.JWT_SECRET);
       console.log('payload:',payload);
       req.user = payload;
     } catch (err) {
