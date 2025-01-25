@@ -75,7 +75,7 @@ exports.signupController = async (req, res) => {
       email,
       password: hashpassword,
       accountType,
-      additionDetails: profileDeatails._id,
+      additionDetails:profileDeatails._id,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
  //return res
